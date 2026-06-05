@@ -66,6 +66,7 @@ class AOIWindow(QMainWindow):
         self.setup_threads()
         self.setup_timers()
 
+
     # =========================
     # UI
     # =========================
@@ -117,29 +118,27 @@ class AOIWindow(QMainWindow):
         self.cam1_frame.setStyleSheet("""
             background:black;
             border:3px solid #00d084;
-            padding:6px
         """)
 
+        # 중요: 오버레이를 위에 띄우기 위해 QGridLayout이나 겹치기 구조를 사용하거나, 
+        # 위젯 내부 레이아웃 관리를 위해 아래와 같이 설정합니다.
         cam1_layout = QVBoxLayout(self.cam1_frame)
-        cam1_layout.setContentsMargins(0, 0, 0, 0)
+        cam1_layout.setContentsMargins(5, 5, 5, 5) # 테두리 안쪽 여백 최소화
 
         self.cam1 = QLabel()
-        self.cam1.setFixedSize(900, 800)
-        self.cam1.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # self.cam1.setFixedSize(900, 800) 👈 이 줄을 삭제하여 프레임에 맞게 자동 조절되게 합니다.
+        self.cam1.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.cam1.setAlignment(Qt.AlignCenter)
 
-        self.cam1_overlay = QLabel("")
+        self.cam1_overlay = QLabel("READY")
         self.cam1_overlay.setFixedSize(140, 60)
         self.cam1_overlay.setStyleSheet("""
-            color:white;
-            font-size:22px;
-            font-weight:bold;
-            background:rgba(0,0,0,160);
-            border:none;
-            border-radius:6px;
+            color:white; font-size:22px; font-weight:bold;
+            background:rgba(0,0,0,160); border:none; border-radius:6px;
         """)
+        self.cam1_overlay.setAlignment(Qt.AlignCenter)
 
-        cam1_layout.addWidget(self.cam1)
+        cam1_layout.addWidget(self.cam1, 1) # 카메라 영상이 대부분의 공간을 차지하도록 설정
         cam1_layout.addWidget(self.cam1_overlay, 0, Qt.AlignBottom | Qt.AlignRight)
    
         # =========================
@@ -150,29 +149,25 @@ class AOIWindow(QMainWindow):
         self.cam2_frame.setStyleSheet("""
             background:black;
             border:3px solid #00d084;
-            padding:6px
         """)
 
         cam2_layout = QVBoxLayout(self.cam2_frame)
-        cam2_layout.setContentsMargins(0, 0, 0, 0)
+        cam2_layout.setContentsMargins(5, 5, 5, 5)
 
         self.cam2 = QLabel()
-        self.cam2.setFixedSize(900, 800)
-        self.cam2.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # self.cam2.setFixedSize(900, 800) 👈 이 줄도 삭제
+        self.cam2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.cam2.setAlignment(Qt.AlignCenter)
 
-        self.cam2_overlay = QLabel("")
+        self.cam2_overlay = QLabel("READY")
         self.cam2_overlay.setFixedSize(140, 60)
         self.cam2_overlay.setStyleSheet("""
-            color:white;
-            font-size:22px;
-            font-weight:bold;
-            background:rgba(0,0,0,160);
-            border:none;
-            border-radius:6px;
+            color:white; font-size:22px; font-weight:bold;
+            background:rgba(0,0,0,160); border:none; border-radius:6px;
         """)
+        self.cam2_overlay.setAlignment(Qt.AlignCenter)
 
-        cam2_layout.addWidget(self.cam2)
+        cam2_layout.addWidget(self.cam2, 1)
         cam2_layout.addWidget(self.cam2_overlay, 0, Qt.AlignBottom | Qt.AlignRight)
         cams.addWidget(self.cam1_frame)
         cams.addWidget(self.cam2_frame)
@@ -418,7 +413,7 @@ class AOIWindow(QMainWindow):
 
             ok = False
             for box in yolo_result.boxes:
-                if float(box.conf) > 0.5:
+                if float(box.conf) > 0.3:
                     ok = True
                     break
 
@@ -433,7 +428,7 @@ class AOIWindow(QMainWindow):
 
             ok = False
             for box in yolo_result.boxes:
-                if float(box.conf) > 0.5:
+                if float(box.conf) > 0.3:
                     ok = True
                     break
 
